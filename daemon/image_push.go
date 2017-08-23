@@ -3,6 +3,7 @@ package daemon
 import (
 	"io"
 	"runtime"
+	"compress/gzip"
 
 	"github.com/docker/distribution/manifest/schema2"
 	"github.com/docker/distribution/reference"
@@ -60,6 +61,7 @@ func (daemon *Daemon) PushImage(ctx context.Context, image, tag string, metaHead
 		},
 		ConfigMediaType: schema2.MediaTypeImageConfig,
 		LayerStore:      distribution.NewLayerProviderFromStore(daemon.stores[platform].layerStore),
+		LayerCompressor: distribution.NewGzipCompressor(gzip.DefaultCompression),
 		TrustKey:        daemon.trustKey,
 		UploadManager:   daemon.uploadManager,
 	}
